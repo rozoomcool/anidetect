@@ -23,7 +23,7 @@ config = MainConfig(config_sources=FileSource(file=os.path.join("configs", "conf
 
 @app.post("/predict")
 async def predict(files: List[UploadFile] = File(...)):
-    # print(config.src_dir)
+    print(config.src_dir)
     upload_folder = config.src_dir
     os.makedirs(config.src_dir, exist_ok=True)
     # os.makedirs(os.path.join(os.getcwd(), upload_folder), exist_ok=True)

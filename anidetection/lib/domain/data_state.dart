@@ -21,8 +21,9 @@ class DirectoryDataState extends DataState {
 @immutable
 class CsvDataState extends DataState {
   final String csvData;
+  final String rootFolder;
 
-  CsvDataState(this.csvData);
+  CsvDataState({required this.csvData, required this.rootFolder});
 
   @override
   List<Object?> get props => [csvData];
@@ -36,6 +37,10 @@ class LoadingDataState extends DataState {
 
 @immutable
 class ErrorDataState extends DataState {
+  final String? message;
+
+  ErrorDataState(this.message);
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [message];
 }

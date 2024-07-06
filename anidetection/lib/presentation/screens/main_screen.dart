@@ -21,13 +21,20 @@ class MainScreen extends StatelessWidget {
     } else if (state is DirectoryDataState) {
       return CustomTreeView(rootNode: state.rootNode);
     } else if (state is CsvDataState) {
-      return CustomTableView(data: state.csvData);
+      return CustomTableView(
+        data: state.csvData,
+        rootFolder: state.rootFolder,
+      );
     } else if (state is ErrorDataState) {
       return const Center(child: Text("Error"));
     } else if (state is EmptyDataState) {
-      return const Center(child: Text("No data"),);
+      return const Center(
+        child: Text("No data"),
+      );
     } else {
-      return const Center(child: Text("No data"),);
+      return const Center(
+        child: Text("No data"),
+      );
     }
   }
 
@@ -35,26 +42,27 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DataCubit(),
-      child: BlocBuilder<DataCubit, DataState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text("AniDetector"),
-              actions: [
-                ElevatedButton(
-                  onPressed: context.read<DataCubit>().pickDirectory,
-                  child: const Text('Pick Directory'),
-                ),
-                state is! DirectoryDataState
-                    ? const SizedBox()
-                    : ElevatedButton(
-                    onPressed: () {context.read<DataCubit>().predictData();}, child: const Text("Обработать"))
-              ],
-            ),
-            body: dataWidget(state),
-          );
-        }
-      ),
+      child: BlocBuilder<DataCubit, DataState>(builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("AniDetector"),
+            actions: [
+              ElevatedButton(
+                onPressed: context.read<DataCubit>().pickDirectory,
+                child: const Text('Pick Directory'),
+              ),
+              state is! DirectoryDataState
+                  ? const SizedBox()
+                  : ElevatedButton(
+                      onPressed: () {
+                        context.read<DataCubit>().predictData();
+                      },
+                      child: const Text("Обработать"))
+            ],
+          ),
+          body: dataWidget(state),
+        );
+      }),
     );
   }
 }

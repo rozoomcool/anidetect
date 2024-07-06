@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:anidetection/utils/my_tree_node.dart';
+import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../service/predict_service.dart';
+import '../utils/image_utils.dart';
 
 part 'data_state.dart';
 
@@ -26,7 +28,7 @@ class DataCubit extends Cubit<DataState> {
       }
     } catch (e) {
       debugPrint("$e");
-      emit(ErrorDataState());
+      emit(ErrorDataState("Error load input data"));
     }
   }
 
@@ -54,27 +56,59 @@ class DataCubit extends Cubit<DataState> {
 
   void predictData() async {
     try {
-      List<String> filePathes = (state as DirectoryDataState)
-          .rootNode
-          .children
-          .map<String>((value) => value.title)
-          .toList();
+      List<MyTreeNode> cameras =
+          (state as DirectoryDataState).rootNode.children.toList();
 
-      filePathes = filePathes
-          .where((el) => el.contains(".JPG") || el.contains(".jpg"))
-          .toList();
+      List<String> imagesPath = [];
 
-      List<MultipartFile> mutiparts = filePathes
+      for (int i = 0; i < cameras.length; i++) {
+        for (int j = 0; j < cameras[i].children.length; j++) {
+          imagesPath.add(cameras[i].children[j].title);
+        }
+      }
+
+      imagesPath = imagesPath.where((el) => isImageFile(el)).toList();
+
+      // print(imagesPath);
+
+      List<MultipartFile> mutiparts = imagesPath
           .map<MultipartFile>((el) => MultipartFile.fromFileSync(el))
           .toList();
 
+      // debugPrint(imagesPath.toString());
+
       emit(LoadingDataState());
       var result = await GetIt.I<PredictService>().predictData(mutiparts);
-      debugPrint(result);
-      emit(CsvDataState(result));
+
+      List<String> images = imagesPath.map<String>((el) {
+        var temp = el.split("\\").reversed.toList();
+        return "${temp[1]}/${temp[0]}"; // исправлено на temp[0]
+      }).toList();
+
+      var csv = const CsvToListConverter().convert(result);
+      List<List<dynamic>> updatedCsv = [];
+
+      // Добавляем заголовок
+      updatedCsv.add(["folder_name", ...csv[0]]);
+
+      for (int i = 1; i < csv.length; i++) {
+        String imagePath =
+            imagesPath.firstWhere((path) => path.split("\\").last == csv[i][0]);
+        String folderName = imagePath.split("\\").reversed.toList()[1];
+        updatedCsv.add([folderName, ...csv[i]]);
+      }
+
+      // debugPrint(updatedCsv.toString());
+
+      // Преобразуем обратно в CSV строку
+      String updatedCsvString = const ListToCsvConverter().convert(updatedCsv);
+      var rootFolder = imagesPath[0].split("\\");
+      rootFolder.removeLast();
+      rootFolder.removeLast();
+      emit(CsvDataState(csvData: updatedCsvString, rootFolder: rootFolder.join("/")));
     } catch (e) {
       debugPrint("${e}");
-      emit(ErrorDataState());
+      emit(ErrorDataState("Error load input data"));
     }
   }
 }
