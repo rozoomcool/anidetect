@@ -17,6 +17,25 @@ class CustomTableView extends StatefulWidget {
 }
 
 class _CustomTableViewState extends State<CustomTableView> {
+  TableRow tableHeaders() {
+    return TableRow(
+        children: <String>[
+          "Имя папки",
+          "Класс Животного",
+          "Начало регистрации",
+          "Конец регистрации",
+          "точность",
+          "Название фото"
+        ].map((el) =>
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                  el
+              ),
+            )).toList()
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -32,27 +51,34 @@ class _CustomTableViewState extends State<CustomTableView> {
                 child: Text("Error to load table data\n${snap.error}"));
           } else if (snap.hasData) {
             var data = snap.data!;
+
+            var dataTableRow = <TableRow>[];
+            dataTableRow.add(tableHeaders());
+            dataTableRow.addAll(data.map<TableRow>((item) {
+              return TableRow(
+                children: <String>[
+                  item.nameFolder,
+                  item.className,
+                  dateFormat.format(item.dateRegistrationStart),
+                  item.dateRegistrationEnd != null
+                      ? dateFormat.format(item.dateRegistrationEnd!)
+                      : "null",
+                  item.confidence.toString(),
+                  item.imageName
+                ].map<Widget>((row) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      row.toString(),
+                    ),
+                  );
+                }).toList(),
+              );
+            }));
+
             return Table(
               border: TableBorder.all(width: 1.0),
-              children: data.map((item) {
-                return TableRow(
-                  children: <String>[
-                    item.nameFolder,
-                    item.className,
-                    dateFormat.format(item.dateRegistrationStart),
-                    item.dateRegistrationEnd != null
-                        ? dateFormat.format(item.dateRegistrationEnd!)
-                        : "null"
-                  ].map<Widget>((row) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        row.toString(),
-                      ),
-                    );
-                  }).toList(),
-                );
-              }).toList(),
+              children: dataTableRow,
             );
           } else {
             return const Center(child: Text("No data available"));

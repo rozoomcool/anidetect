@@ -23,7 +23,7 @@ class PredictService {
     }
     var response = await _dio.post("/predict", data: formData);
 
-    return (response.data as List<Map<String, Object?>>)
+    return (response.data as List<dynamic>)
         .map<DataRowDefault>((el) => DataRowDefault.fromJson(el))
         .toList();
   }

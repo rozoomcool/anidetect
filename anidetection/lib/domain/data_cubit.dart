@@ -78,15 +78,15 @@ class DataCubit extends Cubit<DataState> {
 
       List<DataRowDefault> data = await _predictService.predictData(multiparts);
 
-      data.map<DataRowDefault>((el) {
+      data = data.map<DataRowDefault>((el) {
         String imagePath = imagesPath
             .where((path) => path.split(pathRegex).last == el.imageName)
             .first;
         return el.copyWith(
             folderName: imagePath.split(pathRegex).reversed.toList()[1]);
-      });
+      }).toList();
 
-      var rootFolder = imagesPath[0].split("\\");
+      var rootFolder = imagesPath[0].split(pathRegex);
       rootFolder.removeLast();
       rootFolder.removeLast();
 

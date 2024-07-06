@@ -59,6 +59,13 @@ Future<List<SampleSubmissionData>> processAnimalData(
   return filteredData;
 }
 
+List<SampleSubmissionData> resolveAnimals(List<SampleSubmissionData> data) {
+
+  
+
+  return data;
+}
+
 extension on DateTime {
   DateTime floor() {
     return DateTime(year, month, day, hour);
