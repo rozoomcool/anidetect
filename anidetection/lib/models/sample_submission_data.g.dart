@@ -14,9 +14,8 @@ _$SampleSubmissionDataImpl _$$SampleSubmissionDataImplFromJson(
       className: json['className'] as String,
       dateRegistrationStart:
           DateTime.parse(json['dateRegistrationStart'] as String),
-      dateRegistrationEnd: json['dateRegistrationEnd'] == null
-          ? null
-          : DateTime.parse(json['dateRegistrationEnd'] as String),
+      dateRegistrationEnd:
+          DateTime.parse(json['dateRegistrationEnd'] as String),
       count: (json['count'] as num).toInt(),
       confidence: (json['confidence'] as num).toDouble(),
     );
@@ -28,7 +27,7 @@ Map<String, dynamic> _$$SampleSubmissionDataImplToJson(
       'imageName': instance.imageName,
       'className': instance.className,
       'dateRegistrationStart': instance.dateRegistrationStart.toIso8601String(),
-      'dateRegistrationEnd': instance.dateRegistrationEnd?.toIso8601String(),
+      'dateRegistrationEnd': instance.dateRegistrationEnd.toIso8601String(),
       'count': instance.count,
       'confidence': instance.confidence,
     };

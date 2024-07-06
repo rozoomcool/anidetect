@@ -12,7 +12,7 @@ class SampleSubmissionData with _$SampleSubmissionData {
         required String imageName,
         required String className,
         required DateTime dateRegistrationStart,
-        required DateTime? dateRegistrationEnd,
+        required DateTime dateRegistrationEnd,
         required int count,
         required double confidence}) = _SampleSubmissionData;
 

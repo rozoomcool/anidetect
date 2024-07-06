@@ -24,7 +24,7 @@ mixin _$SampleSubmissionData {
   String get imageName => throw _privateConstructorUsedError;
   String get className => throw _privateConstructorUsedError;
   DateTime get dateRegistrationStart => throw _privateConstructorUsedError;
-  DateTime? get dateRegistrationEnd => throw _privateConstructorUsedError;
+  DateTime get dateRegistrationEnd => throw _privateConstructorUsedError;
   int get count => throw _privateConstructorUsedError;
   double get confidence => throw _privateConstructorUsedError;
 
@@ -45,7 +45,7 @@ abstract class $SampleSubmissionDataCopyWith<$Res> {
       String imageName,
       String className,
       DateTime dateRegistrationStart,
-      DateTime? dateRegistrationEnd,
+      DateTime dateRegistrationEnd,
       int count,
       double confidence});
 }
@@ -68,7 +68,7 @@ class _$SampleSubmissionDataCopyWithImpl<$Res,
     Object? imageName = null,
     Object? className = null,
     Object? dateRegistrationStart = null,
-    Object? dateRegistrationEnd = freezed,
+    Object? dateRegistrationEnd = null,
     Object? count = null,
     Object? confidence = null,
   }) {
@@ -89,10 +89,10 @@ class _$SampleSubmissionDataCopyWithImpl<$Res,
           ? _value.dateRegistrationStart
           : dateRegistrationStart // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      dateRegistrationEnd: freezed == dateRegistrationEnd
+      dateRegistrationEnd: null == dateRegistrationEnd
           ? _value.dateRegistrationEnd
           : dateRegistrationEnd // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
       count: null == count
           ? _value.count
           : count // ignore: cast_nullable_to_non_nullable
@@ -118,7 +118,7 @@ abstract class _$$SampleSubmissionDataImplCopyWith<$Res>
       String imageName,
       String className,
       DateTime dateRegistrationStart,
-      DateTime? dateRegistrationEnd,
+      DateTime dateRegistrationEnd,
       int count,
       double confidence});
 }
@@ -138,7 +138,7 @@ class __$$SampleSubmissionDataImplCopyWithImpl<$Res>
     Object? imageName = null,
     Object? className = null,
     Object? dateRegistrationStart = null,
-    Object? dateRegistrationEnd = freezed,
+    Object? dateRegistrationEnd = null,
     Object? count = null,
     Object? confidence = null,
   }) {
@@ -159,10 +159,10 @@ class __$$SampleSubmissionDataImplCopyWithImpl<$Res>
           ? _value.dateRegistrationStart
           : dateRegistrationStart // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      dateRegistrationEnd: freezed == dateRegistrationEnd
+      dateRegistrationEnd: null == dateRegistrationEnd
           ? _value.dateRegistrationEnd
           : dateRegistrationEnd // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
       count: null == count
           ? _value.count
           : count // ignore: cast_nullable_to_non_nullable
@@ -199,7 +199,7 @@ class _$SampleSubmissionDataImpl implements _SampleSubmissionData {
   @override
   final DateTime dateRegistrationStart;
   @override
-  final DateTime? dateRegistrationEnd;
+  final DateTime dateRegistrationEnd;
   @override
   final int count;
   @override
@@ -257,7 +257,7 @@ abstract class _SampleSubmissionData implements SampleSubmissionData {
       required final String imageName,
       required final String className,
       required final DateTime dateRegistrationStart,
-      required final DateTime? dateRegistrationEnd,
+      required final DateTime dateRegistrationEnd,
       required final int count,
       required final double confidence}) = _$SampleSubmissionDataImpl;
 
@@ -273,7 +273,7 @@ abstract class _SampleSubmissionData implements SampleSubmissionData {
   @override
   DateTime get dateRegistrationStart;
   @override
-  DateTime? get dateRegistrationEnd;
+  DateTime get dateRegistrationEnd;
   @override
   int get count;
   @override

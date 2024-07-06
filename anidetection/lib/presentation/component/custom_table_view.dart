@@ -24,6 +24,7 @@ class _CustomTableViewState extends State<CustomTableView> {
           "Класс Животного",
           "Начало регистрации",
           "Конец регистрации",
+          "Количество",
           "точность",
           "Название фото"
         ].map((el) =>
@@ -50,7 +51,7 @@ class _CustomTableViewState extends State<CustomTableView> {
             return Center(
                 child: Text("Error to load table data\n${snap.error}"));
           } else if (snap.hasData) {
-            var data = snap.data!;
+            var data = mergeSampleSubmissionData(snap.data!);
 
             var dataTableRow = <TableRow>[];
             dataTableRow.add(tableHeaders());
@@ -63,6 +64,7 @@ class _CustomTableViewState extends State<CustomTableView> {
                   item.dateRegistrationEnd != null
                       ? dateFormat.format(item.dateRegistrationEnd!)
                       : "null",
+                  item.count.toString(),
                   item.confidence.toString(),
                   item.imageName
                 ].map<Widget>((row) {

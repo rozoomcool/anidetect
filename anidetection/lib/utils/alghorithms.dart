@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:anidetection/models/data_row_default.dart';
 import 'package:anidetection/models/sample_submission_data.dart';
+import 'package:anidetection/utils/utils.dart';
 import 'package:csv/csv.dart';
 import 'package:exif/exif.dart';
 import 'package:intl/intl.dart';
@@ -39,7 +40,7 @@ Future<List<SampleSubmissionData>> processAnimalData(
                 imageName: row.imageName,
                 className: row.className,
                 dateRegistrationStart: timestamp,
-                dateRegistrationEnd: null,
+                dateRegistrationEnd: timestamp,
                 count: row.count,
                 confidence: row.confidence));
           } catch (e) {
@@ -59,12 +60,114 @@ Future<List<SampleSubmissionData>> processAnimalData(
   return filteredData;
 }
 
-List<SampleSubmissionData> resolveAnimals(List<SampleSubmissionData> data) {
+// List<SampleSubmissionData> resolveAnimals(List<SampleSubmissionData> data) {
+//
+//   SampleSubmissionData? dp;
+//   List<SampleSubmissionData> result = [];
+//
+//   while(data.isNotEmpty) {
+//     dp = data.removeAt(0);
+//     List<int> indexesToDeleted = [];
+//     var copied = List<SampleSubmissionData>.from(data);
+//
+//      for (int i = 0; i < copied.length; i++) {
+//       if(copied[i].nameFolder == dp!.nameFolder && copied[i].className == dp.className) {
+//         int difference = calculateDifferenceInMinutes(copied[i].dateRegistrationStart, dp.dateRegistrationStart);
+//         if (difference > 30) continue;
+//
+//         dp = dp.copyWith(dateRegistrationEnd: copied[i].dateRegistrationStart);
+//       }
+//     }
+//   }
+//
+//   return data;
+// }
 
-  
 
-  return data;
+List<SampleSubmissionData> mergeSampleSubmissionData(List<SampleSubmissionData> data) {
+  // Создаем карту для хранения групп
+  Map<String, List<SampleSubmissionData>> groupedData = {};
+
+  // Группируем данные по nameFolder и className
+  for (var entry in data) {
+    String key = '${entry.nameFolder}-${entry.className}';
+    if (!groupedData.containsKey(key)) {
+      groupedData[key] = [];
+    }
+    groupedData[key]!.add(entry);
+  }
+
+  List<SampleSubmissionData> mergedData = [];
+
+  // Обрабатываем каждую группу
+  for (var group in groupedData.values) {
+    // Сортируем группу по dateRegistrationStart
+    group.sort((a, b) => a.dateRegistrationStart.compareTo(b.dateRegistrationStart));
+
+    List<SampleSubmissionData> tempGroup = [];
+    for (var entry in group) {
+      if (tempGroup.isEmpty) {
+        tempGroup.add(entry);
+      } else {
+        var lastEntry = tempGroup.last;
+        // Проверяем условие на разницу во времени
+        if (entry.dateRegistrationStart.difference(lastEntry.dateRegistrationStart).inMinutes <= 30) {
+          tempGroup.add(entry);
+        } else {
+          // Объединяем текущую группу и добавляем в результат
+          mergedData.add(_mergeEntries(tempGroup));
+          tempGroup = [entry];
+        }
+      }
+    }
+    // Не забудьте объединить последнюю группу
+    if (tempGroup.isNotEmpty) {
+      mergedData.add(_mergeEntries(tempGroup));
+    }
+  }
+
+  return mergedData;
 }
+
+SampleSubmissionData _mergeEntries(List<SampleSubmissionData> entries) {
+  if (entries.isEmpty) {
+    throw ArgumentError('Cannot merge empty list of entries');
+  }
+
+  String nameFolder = entries.first.nameFolder;
+  String className = entries.first.className;
+  DateTime dateRegistrationStart = entries.first.dateRegistrationStart;
+  DateTime dateRegistrationEnd = entries.first.dateRegistrationEnd;
+  int count = 0;
+  double confidence = 0.0;
+  List<String> imageNames = [];
+
+  for (var entry in entries) {
+    if (dateRegistrationEnd == null || (entry.dateRegistrationEnd != null && entry.dateRegistrationEnd!.isAfter(dateRegistrationEnd))) {
+      dateRegistrationEnd = entry.dateRegistrationEnd;
+    }
+    if (entry.count > count) {
+      count = entry.count;
+    }
+    confidence += entry.confidence; // Суммируем confidence
+    imageNames.add(entry.imageName);
+  }
+
+  // Среднее значение confidence
+  confidence = confidence / entries.length;
+
+  return SampleSubmissionData(
+    nameFolder: nameFolder,
+    imageName: imageNames.join(', '), // Объединяем имена изображений через запятую
+    className: className,
+    dateRegistrationStart: dateRegistrationStart,
+    dateRegistrationEnd: dateRegistrationEnd,
+    count: count,
+    confidence: confidence,
+  );
+}
+
+
 
 extension on DateTime {
   DateTime floor() {
