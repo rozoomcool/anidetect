@@ -143,7 +143,7 @@ SampleSubmissionData _mergeEntries(List<SampleSubmissionData> entries) {
   List<String> imageNames = [];
 
   for (var entry in entries) {
-    if (dateRegistrationEnd == null || (entry.dateRegistrationEnd != null && entry.dateRegistrationEnd!.isAfter(dateRegistrationEnd))) {
+    if ((entry.dateRegistrationEnd.isAfter(dateRegistrationEnd))) {
       dateRegistrationEnd = entry.dateRegistrationEnd;
     }
     if (entry.count > count) {

@@ -57,7 +57,8 @@ class MainScreen extends StatelessWidget {
                       onPressed: () {
                         context.read<DataCubit>().predictData();
                       },
-                      child: const Text("Обработать"))
+                      child: const Text("Обработать")),
+              state is LoadingDataState ? ElevatedButton(onPressed: (){}, child: const Text("Выгрузить данные")) : const SizedBox()
             ],
           ),
           body: dataWidget(state),

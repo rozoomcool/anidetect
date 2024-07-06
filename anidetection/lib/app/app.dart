@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Animals Detection',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        useMaterial3: false,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
+          useMaterial3: false,
         textTheme: GoogleFonts.montserratTextTheme()
       ),
       routerConfig: _router,
