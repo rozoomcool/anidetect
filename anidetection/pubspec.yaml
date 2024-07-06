@@ -45,9 +45,9 @@ dependencies:
   flutter_fancy_tree_view: ^1.6.0
   dio: ^5.5.0+1
   get_it: ^7.7.0
-  flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
   csv: ^6.0.0
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
@@ -59,10 +59,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
-  riverpod_generator: ^2.4.0
   build_runner: ^2.4.11
   custom_lint: ^0.6.4
-  riverpod_lint: ^2.3.10
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

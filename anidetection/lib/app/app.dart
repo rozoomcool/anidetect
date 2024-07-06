@@ -8,13 +8,13 @@ import 'package:google_fonts/google_fonts.dart';
 final _router = GoRouter(
   routes: [
     GoRoute(
-      path: '/fd',
+      path: '/',
       builder: (context, state) => const MainScreen(),
     ),
-    GoRoute(
-      path: '/',
-      builder: (context, state) => DirectoryPickerPage(),
-    ),
+    // GoRoute(
+    //   path: '/',
+    //   builder: (context, state) => DirectoryPickerPage(),
+    // ),
   ],
 );
 
