@@ -1,3 +1,4 @@
+import 'package:anidetection/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_fancy_tree_view/flutter_fancy_tree_view.dart';
 
@@ -13,7 +14,6 @@ class CustomTreeView extends StatefulWidget {
 }
 
 class _CustomTreeViewState extends State<CustomTreeView> {
-
   late final TreeController<MyTreeNode> _treeController;
 
   @override
@@ -44,16 +44,32 @@ class _CustomTreeViewState extends State<CustomTreeView> {
     return AnimatedTreeView<MyTreeNode>(
       shrinkWrap: true,
       treeController: _treeController,
-      nodeBuilder:
-          (BuildContext context, TreeEntry<MyTreeNode> entry) {
+      nodeBuilder: (BuildContext context, TreeEntry<MyTreeNode> entry) {
         return InkWell(
-          onTap: () =>
-              _treeController.toggleExpansion(entry.node),
+          onTap: () => _treeController.toggleExpansion(entry.node),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: TreeIndentation(
               entry: entry,
-              child: Text(entry.node.title.split("\\").last),
+              child: Row(
+                children: [
+                  Icon(
+                    entry.node.children.isNotEmpty
+                        ? Icons.folder
+                        : isImageFile(entry.node.title)
+                            ? Icons.image
+                            : Icons.insert_drive_file,
+                    color: entry.node.children.isNotEmpty
+                        ? Colors.orange
+                        : Colors.grey,
+                  ),
+                  const SizedBox(width: 8.0),
+                  Text(
+                    entry.node.title.split("\\").last,
+                    overflow: TextOverflow.fade,
+                  ),
+                ],
+              ),
             ),
           ),
         );

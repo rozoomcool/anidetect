@@ -16,16 +16,22 @@ class DataCubit extends Cubit<DataState> {
   DataCubit() : super(EmptyDataState());
 
   Future<void> pickDirectory() async {
-    String? selectedDirectoryPath =
-        await FilePicker.platform.getDirectoryPath();
-    if (selectedDirectoryPath != null) {
-      Directory directory = Directory(selectedDirectoryPath);
-      MyTreeNode directoryTree = await _buildDirectoryTree(directory);
-      emit(DirectoryDataState(directoryTree));
+    try {
+      String? selectedDirectoryPath =
+          await FilePicker.platform.getDirectoryPath();
+      if (selectedDirectoryPath != null) {
+        Directory directory = Directory(selectedDirectoryPath);
+        MyTreeNode directoryTree = await _buildDirectoryTree(directory);
+        emit(DirectoryDataState(directoryTree));
+      }
+    } catch (e) {
+      debugPrint("$e");
+      emit(ErrorDataState());
     }
   }
 
   Future<MyTreeNode> _buildDirectoryTree(Directory directory) async {
+    emit(LoadingDataState());
     List<MyTreeNode> children = [];
     try {
       await for (FileSystemEntity entity

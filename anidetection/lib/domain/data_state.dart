@@ -2,6 +2,7 @@ part of "data_cubit.dart";
 
 abstract class DataState extends Equatable{}
 
+@immutable
 class EmptyDataState extends DataState {
   @override
   List<Object?> get props => [];
@@ -17,6 +18,7 @@ class DirectoryDataState extends DataState {
   List<Object?> get props => [rootNode];
 }
 
+@immutable
 class CsvDataState extends DataState {
   final String csvData;
 
@@ -26,11 +28,13 @@ class CsvDataState extends DataState {
   List<Object?> get props => [csvData];
 }
 
+@immutable
 class LoadingDataState extends DataState {
   @override
   List<Object?> get props => [];
 }
 
+@immutable
 class ErrorDataState extends DataState {
   @override
   List<Object?> get props => [];
