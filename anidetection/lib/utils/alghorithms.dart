@@ -1,27 +1,19 @@
 import 'dart:io';
+import 'package:anidetection/models/data_row_default.dart';
+import 'package:anidetection/models/sample_submission_data.dart';
 import 'package:csv/csv.dart';
 import 'package:exif/exif.dart';
 import 'package:intl/intl.dart';
 
-Future<String> processAnimalData(String rootFolder, String csvString) async {
-  final fields = const CsvToListConverter().convert(csvString);
+final dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
 
-  // Преобразование строк CSV в объекты с проверкой количества элементов
-  final data = fields.where((row) => row.length == 5).map((row) => {
-    'folder_name': row[0],
-    'image_name': row[1],
-    'class_name': row[2],
-    'count': row[3],
-    'confidence': row[4]
-  }).toList();
-
-  print('Data loaded');
-
+Future<List<SampleSubmissionData>> processAnimalData(
+    String rootFolder, List<DataRowDefault> dataRow) async {
   // Фильтрация данных по наличию метаданных
-  final filteredData = <Map<String, dynamic>>[];
+  final filteredData = <SampleSubmissionData>[];
 
-  for (var row in data) {
-    final filePath = '$rootFolder/${row['folder_name']}/${row['image_name']}';
+  for (var row in dataRow) {
+    final filePath = '$rootFolder/${row.folderName}/${row.imageName}';
     final file = File(filePath);
 
     if (file.existsSync()) {
@@ -41,8 +33,15 @@ Future<String> processAnimalData(String rootFolder, String csvString) async {
                 .toUtc();
             print('Parsed DateTime: $dateTime');
 
-            row['timestamp'] = dateTime;
-            filteredData.add(row);
+            var timestamp = dateTime;
+            filteredData.add(SampleSubmissionData(
+                nameFolder: row.folderName,
+                imageName: row.imageName,
+                className: row.className,
+                dateRegistrationStart: timestamp,
+                dateRegistrationEnd: null,
+                count: row.count,
+                confidence: row.confidence));
           } catch (e) {
             print('Error parsing date: $e');
           }
@@ -57,47 +56,7 @@ Future<String> processAnimalData(String rootFolder, String csvString) async {
     }
   }
 
-  print('Filtered data length: ${filteredData.length}');
-
-  if (filteredData.isEmpty) {
-    return const ListToCsvConverter().convert([
-      [
-        "name_folder",
-        "class",
-        "date_registration_start",
-        "date_registration_end",
-        "count"
-      ]
-    ]);
-  }
-
-  final List<List<dynamic>> csvData = [
-    [
-      "name_folder",
-      "class",
-      "date_registration_start",
-      "date_registration_end",
-      "count"
-    ]
-  ];
-
-  final dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-
-  filteredData.forEach((row) {
-    csvData.add([
-      row['folder_name'],
-      row['class_name'],
-      dateFormat.format(row['timestamp']),
-      null,
-      row['count']
-    ]);
-  });
-
-  String csvResult = const ListToCsvConverter().convert(csvData);
-
-  print(csvResult);
-
-  return csvResult;
+  return filteredData;
 }
 
 extension on DateTime {

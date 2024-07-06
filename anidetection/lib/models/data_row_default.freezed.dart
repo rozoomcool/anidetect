@@ -20,8 +20,9 @@ DataRowDefault _$DataRowDefaultFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$DataRowDefault {
-  String get image_name => throw _privateConstructorUsedError;
-  String get class_name => throw _privateConstructorUsedError;
+  String get folderName => throw _privateConstructorUsedError;
+  String get imageName => throw _privateConstructorUsedError;
+  String get className => throw _privateConstructorUsedError;
   int get count => throw _privateConstructorUsedError;
   double get confidence => throw _privateConstructorUsedError;
 
@@ -38,7 +39,11 @@ abstract class $DataRowDefaultCopyWith<$Res> {
       _$DataRowDefaultCopyWithImpl<$Res, DataRowDefault>;
   @useResult
   $Res call(
-      {String image_name, String class_name, int count, double confidence});
+      {String folderName,
+      String imageName,
+      String className,
+      int count,
+      double confidence});
 }
 
 /// @nodoc
@@ -54,19 +59,24 @@ class _$DataRowDefaultCopyWithImpl<$Res, $Val extends DataRowDefault>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? image_name = null,
-    Object? class_name = null,
+    Object? folderName = null,
+    Object? imageName = null,
+    Object? className = null,
     Object? count = null,
     Object? confidence = null,
   }) {
     return _then(_value.copyWith(
-      image_name: null == image_name
-          ? _value.image_name
-          : image_name // ignore: cast_nullable_to_non_nullable
+      folderName: null == folderName
+          ? _value.folderName
+          : folderName // ignore: cast_nullable_to_non_nullable
               as String,
-      class_name: null == class_name
-          ? _value.class_name
-          : class_name // ignore: cast_nullable_to_non_nullable
+      imageName: null == imageName
+          ? _value.imageName
+          : imageName // ignore: cast_nullable_to_non_nullable
+              as String,
+      className: null == className
+          ? _value.className
+          : className // ignore: cast_nullable_to_non_nullable
               as String,
       count: null == count
           ? _value.count
@@ -89,7 +99,11 @@ abstract class _$$DataRowDefaultImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String image_name, String class_name, int count, double confidence});
+      {String folderName,
+      String imageName,
+      String className,
+      int count,
+      double confidence});
 }
 
 /// @nodoc
@@ -103,19 +117,24 @@ class __$$DataRowDefaultImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? image_name = null,
-    Object? class_name = null,
+    Object? folderName = null,
+    Object? imageName = null,
+    Object? className = null,
     Object? count = null,
     Object? confidence = null,
   }) {
     return _then(_$DataRowDefaultImpl(
-      image_name: null == image_name
-          ? _value.image_name
-          : image_name // ignore: cast_nullable_to_non_nullable
+      folderName: null == folderName
+          ? _value.folderName
+          : folderName // ignore: cast_nullable_to_non_nullable
               as String,
-      class_name: null == class_name
-          ? _value.class_name
-          : class_name // ignore: cast_nullable_to_non_nullable
+      imageName: null == imageName
+          ? _value.imageName
+          : imageName // ignore: cast_nullable_to_non_nullable
+              as String,
+      className: null == className
+          ? _value.className
+          : className // ignore: cast_nullable_to_non_nullable
               as String,
       count: null == count
           ? _value.count
@@ -133,8 +152,9 @@ class __$$DataRowDefaultImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$DataRowDefaultImpl implements _DataRowDefault {
   const _$DataRowDefaultImpl(
-      {required this.image_name,
-      required this.class_name,
+      {this.folderName = "0",
+      required this.imageName,
+      required this.className,
       required this.count,
       required this.confidence});
 
@@ -142,9 +162,12 @@ class _$DataRowDefaultImpl implements _DataRowDefault {
       _$$DataRowDefaultImplFromJson(json);
 
   @override
-  final String image_name;
+  @JsonKey()
+  final String folderName;
   @override
-  final String class_name;
+  final String imageName;
+  @override
+  final String className;
   @override
   final int count;
   @override
@@ -152,7 +175,7 @@ class _$DataRowDefaultImpl implements _DataRowDefault {
 
   @override
   String toString() {
-    return 'DataRowDefault(image_name: $image_name, class_name: $class_name, count: $count, confidence: $confidence)';
+    return 'DataRowDefault(folderName: $folderName, imageName: $imageName, className: $className, count: $count, confidence: $confidence)';
   }
 
   @override
@@ -160,10 +183,12 @@ class _$DataRowDefaultImpl implements _DataRowDefault {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DataRowDefaultImpl &&
-            (identical(other.image_name, image_name) ||
-                other.image_name == image_name) &&
-            (identical(other.class_name, class_name) ||
-                other.class_name == class_name) &&
+            (identical(other.folderName, folderName) ||
+                other.folderName == folderName) &&
+            (identical(other.imageName, imageName) ||
+                other.imageName == imageName) &&
+            (identical(other.className, className) ||
+                other.className == className) &&
             (identical(other.count, count) || other.count == count) &&
             (identical(other.confidence, confidence) ||
                 other.confidence == confidence));
@@ -171,8 +196,8 @@ class _$DataRowDefaultImpl implements _DataRowDefault {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, image_name, class_name, count, confidence);
+  int get hashCode => Object.hash(
+      runtimeType, folderName, imageName, className, count, confidence);
 
   @JsonKey(ignore: true)
   @override
@@ -191,8 +216,9 @@ class _$DataRowDefaultImpl implements _DataRowDefault {
 
 abstract class _DataRowDefault implements DataRowDefault {
   const factory _DataRowDefault(
-      {required final String image_name,
-      required final String class_name,
+      {final String folderName,
+      required final String imageName,
+      required final String className,
       required final int count,
       required final double confidence}) = _$DataRowDefaultImpl;
 
@@ -200,9 +226,11 @@ abstract class _DataRowDefault implements DataRowDefault {
       _$DataRowDefaultImpl.fromJson;
 
   @override
-  String get image_name;
+  String get folderName;
   @override
-  String get class_name;
+  String get imageName;
+  @override
+  String get className;
   @override
   int get count;
   @override

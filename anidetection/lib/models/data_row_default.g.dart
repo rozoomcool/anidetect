@@ -8,8 +8,9 @@ part of 'data_row_default.dart';
 
 _$DataRowDefaultImpl _$$DataRowDefaultImplFromJson(Map<String, dynamic> json) =>
     _$DataRowDefaultImpl(
-      image_name: json['image_name'] as String,
-      class_name: json['class_name'] as String,
+      folderName: json['folderName'] as String? ?? "0",
+      imageName: json['imageName'] as String,
+      className: json['className'] as String,
       count: (json['count'] as num).toInt(),
       confidence: (json['confidence'] as num).toDouble(),
     );
@@ -17,8 +18,9 @@ _$DataRowDefaultImpl _$$DataRowDefaultImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$DataRowDefaultImplToJson(
         _$DataRowDefaultImpl instance) =>
     <String, dynamic>{
-      'image_name': instance.image_name,
-      'class_name': instance.class_name,
+      'folderName': instance.folderName,
+      'imageName': instance.imageName,
+      'className': instance.className,
       'count': instance.count,
       'confidence': instance.confidence,
     };

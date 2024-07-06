@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:anidetection/models/data_row_default.dart';
 import 'package:anidetection/utils/my_tree_node.dart';
 import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
@@ -16,6 +17,8 @@ part 'data_state.dart';
 
 class DataCubit extends Cubit<DataState> {
   DataCubit() : super(EmptyDataState());
+
+  final PredictService _predictService = GetIt.I<PredictService>();
 
   Future<void> pickDirectory() async {
     try {
@@ -69,46 +72,86 @@ class DataCubit extends Cubit<DataState> {
 
       imagesPath = imagesPath.where((el) => isImageFile(el)).toList();
 
-      // print(imagesPath);
-
-      List<MultipartFile> mutiparts = imagesPath
+      List<MultipartFile> multiparts = imagesPath
           .map<MultipartFile>((el) => MultipartFile.fromFileSync(el))
           .toList();
 
-      // debugPrint(imagesPath.toString());
+      List<DataRowDefault> data = await _predictService.predictData(multiparts);
 
-      emit(LoadingDataState());
-      var result = await GetIt.I<PredictService>().predictData(mutiparts);
+      data.map<DataRowDefault>((el) {
+        String imagePath = imagesPath
+            .where((path) => path.split(pathRegex).last == el.imageName)
+            .first;
+        return el.copyWith(
+            folderName: imagePath.split(pathRegex).reversed.toList()[1]);
+      });
 
-      List<String> images = imagesPath.map<String>((el) {
-        var temp = el.split("\\").reversed.toList();
-        return "${temp[1]}/${temp[0]}"; // исправлено на temp[0]
-      }).toList();
-
-      var csv = const CsvToListConverter().convert(result);
-      List<List<dynamic>> updatedCsv = [];
-
-      // Добавляем заголовок
-      updatedCsv.add(["folder_name", ...csv[0]]);
-
-      for (int i = 1; i < csv.length; i++) {
-        String imagePath =
-            imagesPath.firstWhere((path) => path.split("\\").last == csv[i][0]);
-        String folderName = imagePath.split("\\").reversed.toList()[1];
-        updatedCsv.add([folderName, ...csv[i]]);
-      }
-
-      // debugPrint(updatedCsv.toString());
-
-      // Преобразуем обратно в CSV строку
-      String updatedCsvString = const ListToCsvConverter().convert(updatedCsv);
       var rootFolder = imagesPath[0].split("\\");
       rootFolder.removeLast();
       rootFolder.removeLast();
-      emit(CsvDataState(csvData: updatedCsvString, rootFolder: rootFolder.join("/")));
+
+      emit(LoadedDataState(data: data, rootFolder: rootFolder.join("/")));
     } catch (e) {
-      debugPrint("${e}");
-      emit(ErrorDataState("Error load input data"));
+      debugPrint("$e");
+      emit(ErrorDataState("Error load data from server"));
     }
   }
+
+// void predictData() async {
+//   try {
+//     List<MyTreeNode> cameras =
+//         (state as DirectoryDataState).rootNode.children.toList();
+//
+//     List<String> imagesPath = [];
+//
+//     for (int i = 0; i < cameras.length; i++) {
+//       for (int j = 0; j < cameras[i].children.length; j++) {
+//         imagesPath.add(cameras[i].children[j].title);
+//       }
+//     }
+//
+//     imagesPath = imagesPath.where((el) => isImageFile(el)).toList();
+//
+//     // print(imagesPath);
+//
+//     List<MultipartFile> mutiparts = imagesPath
+//         .map<MultipartFile>((el) => MultipartFile.fromFileSync(el))
+//         .toList();
+//
+//     // debugPrint(imagesPath.toString());
+//
+//     emit(LoadingDataState());
+//     var result = await GetIt.I<PredictService>().predictData(mutiparts);
+//
+//     List<String> images = imagesPath.map<String>((el) {
+//       var temp = el.split("\\").reversed.toList();
+//       return "${temp[1]}/${temp[0]}"; // исправлено на temp[0]
+//     }).toList();
+//
+//     var csv = const CsvToListConverter().convert(result);
+//     List<List<dynamic>> updatedCsv = [];
+//
+//     // Добавляем заголовок
+//     updatedCsv.add(["folder_name", ...csv[0]]);
+//
+//     for (int i = 1; i < csv.length; i++) {
+//       String imagePath =
+//           imagesPath.firstWhere((path) => path.split("\\").last == csv[i][0]);
+//       String folderName = imagePath.split("\\").reversed.toList()[1];
+//       updatedCsv.add([folderName, ...csv[i]]);
+//     }
+//
+//     // debugPrint(updatedCsv.toString());
+//
+//     // Преобразуем обратно в CSV строку
+//     String updatedCsvString = const ListToCsvConverter().convert(updatedCsv);
+//     var rootFolder = imagesPath[0].split("\\");
+//     rootFolder.removeLast();
+//     rootFolder.removeLast();
+//     emit(CsvDataState(csvData: updatedCsvString, rootFolder: rootFolder.join("/")));
+//   } catch (e) {
+//     debugPrint("${e}");
+//     emit(ErrorDataState("Error load input data"));
+//   }
+// }
 }

@@ -20,9 +20,9 @@ class MainScreen extends StatelessWidget {
       return const Center(child: Text("ERROR"));
     } else if (state is DirectoryDataState) {
       return CustomTreeView(rootNode: state.rootNode);
-    } else if (state is CsvDataState) {
+    } else if (state is LoadedDataState) {
       return CustomTableView(
-        data: state.csvData,
+        data: state.data,
         rootFolder: state.rootFolder,
       );
     } else if (state is ErrorDataState) {

@@ -19,14 +19,14 @@ class DirectoryDataState extends DataState {
 }
 
 @immutable
-class CsvDataState extends DataState {
-  final String csvData;
+class LoadedDataState extends DataState {
+  final List<DataRowDefault> data;
   final String rootFolder;
 
-  CsvDataState({required this.csvData, required this.rootFolder});
+  LoadedDataState({required this.data, required this.rootFolder});
 
   @override
-  List<Object?> get props => [csvData];
+  List<Object?> get props => [data];
 }
 
 @immutable

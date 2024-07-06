@@ -1,12 +1,15 @@
+import 'package:anidetection/models/data_row_default.dart';
+import 'package:anidetection/models/sample_submission_data.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/alghorithms.dart'; // Предполагается, что здесь определена функция processAnimalData
 
 class CustomTableView extends StatefulWidget {
-  const CustomTableView({super.key, required this.data, required this.rootFolder});
+  const CustomTableView(
+      {super.key, required this.data, required this.rootFolder});
 
-  final String data;
+  final List<DataRowDefault> data;
   final String rootFolder;
 
   @override
@@ -17,7 +20,7 @@ class _CustomTableViewState extends State<CustomTableView> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: FutureBuilder<String>(
+      child: FutureBuilder<List<SampleSubmissionData>>(
         future: processAnimalData(widget.rootFolder, widget.data),
         // future: Future.value(widget.data),
         builder: (context, snap) {
@@ -25,16 +28,22 @@ class _CustomTableViewState extends State<CustomTableView> {
             return const Center(child: CircularProgressIndicator());
           } else if (snap.hasError) {
             // debugPrint("");
-            return Center(child: Text("Error to load table data\n${snap.error}"));
+            return Center(
+                child: Text("Error to load table data\n${snap.error}"));
           } else if (snap.hasData) {
-            List<List<dynamic>> csvData = const CsvToListConverter().convert(snap.data!);
-            debugPrint(":::::::::::${csvData.length}");
-            debugPrint(":::::::::::${csvData[0].length}");
+            var data = snap.data!;
             return Table(
               border: TableBorder.all(width: 1.0),
-              children: csvData.map((item) {
+              children: data.map((item) {
                 return TableRow(
-                  children: item.map<Widget>((row) {
+                  children: <String>[
+                    item.nameFolder,
+                    item.className,
+                    dateFormat.format(item.dateRegistrationStart),
+                    item.dateRegistrationEnd != null
+                        ? dateFormat.format(item.dateRegistrationEnd!)
+                        : "null"
+                  ].map<Widget>((row) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(

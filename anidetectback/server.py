@@ -1,3 +1,4 @@
+import csv
 import shutil
 from itertools import repeat
 from typing import List
@@ -41,7 +42,21 @@ async def predict(files: List[UploadFile] = File(...)):
 
         predict_data(config)
 
-        return FileResponse("./table_final.csv", media_type='text/csv', filename="result.csv")
+        # Parse the CSV file and create a list of objects
+        result = []
+        with open("./table_final.csv", mode="r") as csvfile:
+            csv_reader = csv.DictReader(csvfile)
+            for row in csv_reader:
+                result.append({
+                    "imageName": row["image_name"],
+                    "className": row["class_name"],
+                    "count": int(row["count"]),
+                    "confidence": float(row["confidence"])
+                })
+
+        return JSONResponse(content=result)
+
+        # return FileResponse("./table_final.csv", media_type='text/csv', filename="result.csv")
     except Exception as e:
         print(e)
     finally:
