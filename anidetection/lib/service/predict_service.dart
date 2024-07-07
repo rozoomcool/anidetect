@@ -22,7 +22,8 @@ class PredictService {
     FormData formData = FormData();
     for (int i = 0; i < files.length; i++) {
       formData.files.add(MapEntry("files", files[i]));
-      if(i % 400 == 0) {
+      // int maxx = files.length - i > 400 ? 400 : files.length - i;
+      if (i % 400 == 0) {
         var response = await _dio.post("/predict", data: formData);
 
         List<DataRowDefault> temp = (response.data as List<dynamic>)
@@ -32,7 +33,18 @@ class PredictService {
 
         formData = FormData();
       }
+
+      if (formData.files.isNotEmpty) {
+        var response = await _dio.post("/predict", data: formData);
+
+        List<DataRowDefault> temp = (response.data as List<dynamic>)
+            .map<DataRowDefault>((el) => DataRowDefault.fromJson(el))
+            .toList();
+        resultData.addAll(temp);
+        formData = FormData();
+      }
     }
+
     return resultData;
   }
 
