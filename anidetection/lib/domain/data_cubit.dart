@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:anidetection/models/data_row_default.dart';
+import 'package:anidetection/models/sample_submission_data.dart';
 import 'package:anidetection/utils/my_tree_node.dart';
 import 'package:csv/csv.dart';
 import 'package:dio/dio.dart';
@@ -9,8 +10,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../service/predict_service.dart';
+import '../utils/alghorithms.dart';
 import '../utils/image_utils.dart';
 
 part 'data_state.dart';
@@ -21,7 +24,47 @@ class DataCubit extends Cubit<DataState> {
   final PredictService _predictService = GetIt.I<PredictService>();
 
   void saveData() async {
-    
+    if (state is LoadedSubmissionDataState){
+
+    List<List<dynamic>> rows = [];
+
+    // Добавляем заголовки
+    rows.add([
+      "name_folder",
+      "class",
+      "date_registration_start",
+      "date_registration_end",
+      "count"
+    ]);
+
+
+    for (var obj in (state as LoadedSubmissionDataState).data) {
+      rows.add([
+        obj.nameFolder,
+        obj.className,
+        dateFormat.format(obj.dateRegistrationStart),
+        dateFormat.format(obj.dateRegistrationEnd),
+        obj.count
+      ]);
+    }
+
+    // Создаем CSV содержимое
+    String csv = const ListToCsvConverter().convert(rows);
+
+    // Используем FilePicker для выбора директории
+    String? outputFile = await FilePicker.platform.saveFile(
+      dialogTitle: 'Please select an output file:',
+      fileName: 'sample_submission_data.csv',
+    );
+
+    if (outputFile != null) {
+      // Создаем и записываем CSV файл
+      final file = File(outputFile);
+      await file.writeAsString(csv);
+
+      print('CSV файл сохранен по пути: $outputFile');
+    }
+    }
   }
 
   Future<void> pickDirectory() async {
@@ -95,10 +138,23 @@ class DataCubit extends Cubit<DataState> {
       rootFolder.removeLast();
 
       emit(LoadedDataState(data: data, rootFolder: rootFolder.join("/")));
+      performData();
     } catch (e) {
       debugPrint("$e");
       emit(ErrorDataState("Error load data from server"));
     }
+  }
+
+  void performData() async {
+    if (state is LoadedDataState) {
+      var loadedState = state as LoadedDataState;
+      var data = await processAnimalData(
+          loadedState.rootFolder, loadedState.data);
+      emit(LoadedSubmissionDataState(data: mergeSampleSubmissionData(data)));
+    } else {
+      emit(ErrorDataState("Ошибка при обработке данных"));
+    }
+
   }
 
 // void predictData() async {

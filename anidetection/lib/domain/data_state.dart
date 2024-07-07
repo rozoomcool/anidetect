@@ -30,6 +30,16 @@ class LoadedDataState extends DataState {
 }
 
 @immutable
+class LoadedSubmissionDataState extends DataState {
+  final List<SampleSubmissionData> data;
+
+  LoadedSubmissionDataState({required this.data});
+
+  @override
+  List<Object?> get props => [data];
+}
+
+@immutable
 class LoadingDataState extends DataState {
   @override
   List<Object?> get props => [];

@@ -2,15 +2,15 @@ import 'package:anidetection/models/data_row_default.dart';
 import 'package:anidetection/models/sample_submission_data.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../utils/alghorithms.dart'; // Предполагается, что здесь определена функция processAnimalData
 
 class CustomTableView extends StatefulWidget {
   const CustomTableView(
-      {super.key, required this.data, required this.rootFolder});
+      {super.key, required this.data});
 
-  final List<DataRowDefault> data;
-  final String rootFolder;
+  final List<SampleSubmissionData> data;
 
   @override
   State<CustomTableView> createState() => _CustomTableViewState();
@@ -41,7 +41,7 @@ class _CustomTableViewState extends State<CustomTableView> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: FutureBuilder<List<SampleSubmissionData>>(
-        future: processAnimalData(widget.rootFolder, widget.data),
+        future: Future.value(widget.data),
         // future: Future.value(widget.data),
         builder: (context, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
@@ -61,9 +61,7 @@ class _CustomTableViewState extends State<CustomTableView> {
                   item.nameFolder,
                   item.className,
                   dateFormat.format(item.dateRegistrationStart),
-                  item.dateRegistrationEnd != null
-                      ? dateFormat.format(item.dateRegistrationEnd!)
-                      : "null",
+                  dateFormat.format(item.dateRegistrationEnd),
                   item.count.toString(),
                   // item.confidence.toString(),
                   // item.imageName

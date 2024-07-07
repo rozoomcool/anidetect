@@ -20,10 +20,9 @@ class MainScreen extends StatelessWidget {
       return const Center(child: Text("ERROR"));
     } else if (state is DirectoryDataState) {
       return CustomTreeView(rootNode: state.rootNode);
-    } else if (state is LoadedDataState) {
+    } else if (state is LoadedSubmissionDataState) {
       return CustomTableView(
         data: state.data,
-        rootFolder: state.rootFolder,
       );
     } else if (state is ErrorDataState) {
       return const Center(child: Text("Error"));
@@ -64,12 +63,12 @@ class MainScreen extends StatelessWidget {
                           },
                           child: const Text("Обработать")),
                     ),
-              state is! LoadedDataState
+              state is! LoadedSubmissionDataState
                   ? const SizedBox()
                   : Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6.0),
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {context.read<DataCubit>().saveData();},
                           child: const Text("Выгрузить данные")),
                     )
             ],
