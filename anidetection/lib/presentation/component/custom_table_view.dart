@@ -25,13 +25,13 @@ class _CustomTableViewState extends State<CustomTableView> {
           "Начало регистрации",
           "Конец регистрации",
           "Количество",
-          "точность",
-          "Название фото"
+          // "точность",
+          // "Название фото"
         ].map((el) =>
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                  el
+                  el, style: Theme.of(context).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
             )).toList()
     );
@@ -65,13 +65,16 @@ class _CustomTableViewState extends State<CustomTableView> {
                       ? dateFormat.format(item.dateRegistrationEnd!)
                       : "null",
                   item.count.toString(),
-                  item.confidence.toString(),
-                  item.imageName
+                  // item.confidence.toString(),
+                  // item.imageName
                 ].map<Widget>((row) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      row.toString(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        row.toString(),
+                      ),
                     ),
                   );
                 }).toList(),
@@ -79,7 +82,7 @@ class _CustomTableViewState extends State<CustomTableView> {
             }));
 
             return Table(
-              border: TableBorder.all(width: 1.0),
+              // border: TableBorder.all(width: 1.0),
               children: dataTableRow,
             );
           } else {

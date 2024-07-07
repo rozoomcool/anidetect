@@ -20,6 +20,10 @@ class DataCubit extends Cubit<DataState> {
 
   final PredictService _predictService = GetIt.I<PredictService>();
 
+  void saveData() async {
+    
+  }
+
   Future<void> pickDirectory() async {
     try {
       String? selectedDirectoryPath =

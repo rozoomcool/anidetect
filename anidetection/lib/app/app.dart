@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'Animals Detection',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
-          useMaterial3: false,
+          useMaterial3: true,
         textTheme: GoogleFonts.montserratTextTheme()
       ),
       routerConfig: _router,

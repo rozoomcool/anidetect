@@ -45,30 +45,33 @@ class _CustomTreeViewState extends State<CustomTreeView> {
       shrinkWrap: true,
       treeController: _treeController,
       nodeBuilder: (BuildContext context, TreeEntry<MyTreeNode> entry) {
-        return InkWell(
-          onTap: () => _treeController.toggleExpansion(entry.node),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TreeIndentation(
-              entry: entry,
-              child: Row(
-                children: [
-                  Icon(
-                    entry.node.children.isNotEmpty
-                        ? Icons.folder
-                        : isImageFile(entry.node.title)
-                            ? Icons.image
-                            : Icons.insert_drive_file,
-                    color: entry.node.children.isNotEmpty
-                        ? Colors.orange
-                        : Colors.grey,
-                  ),
-                  const SizedBox(width: 8.0),
-                  Text(
-                    entry.node.title.split("\\").last,
-                    overflow: TextOverflow.fade,
-                  ),
-                ],
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: GestureDetector(
+            onTap: () => _treeController.toggleExpansion(entry.node),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TreeIndentation(
+                entry: entry,
+                child: Row(
+                  children: [
+                    Icon(
+                      entry.node.children.isNotEmpty
+                          ? Icons.folder
+                          : isImageFile(entry.node.title)
+                              ? Icons.image
+                              : Icons.insert_drive_file,
+                      color: entry.node.children.isNotEmpty
+                          ? Colors.orange
+                          : Colors.grey,
+                    ),
+                    const SizedBox(width: 8.0),
+                    Text(
+                      entry.node.title.split("\\").last,
+                      overflow: TextOverflow.fade,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

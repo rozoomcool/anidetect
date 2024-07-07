@@ -47,21 +47,41 @@ class MainScreen extends StatelessWidget {
           appBar: AppBar(
             title: const Text("AniDetector"),
             actions: [
-              ElevatedButton(
-                onPressed: context.read<DataCubit>().pickDirectory,
-                child: const Text('Pick Directory'),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                child: ElevatedButton(
+                  onPressed: context.read<DataCubit>().pickDirectory,
+                  child: const Text('Выбрать директорию'),
+                ),
               ),
               state is! DirectoryDataState
                   ? const SizedBox()
-                  : ElevatedButton(
-                      onPressed: () {
-                        context.read<DataCubit>().predictData();
-                      },
-                      child: const Text("Обработать")),
-              state is LoadingDataState ? ElevatedButton(onPressed: (){}, child: const Text("Выгрузить данные")) : const SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            context.read<DataCubit>().predictData();
+                          },
+                          child: const Text("Обработать")),
+                    ),
+              state is! LoadedDataState
+                  ? const SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                      child: ElevatedButton(
+                          onPressed: () {},
+                          child: const Text("Выгрузить данные")),
+                    )
             ],
           ),
-          body: dataWidget(state),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
+            child: Card(
+                child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: dataWidget(state),
+            )),
+          ),
         );
       }),
     );
